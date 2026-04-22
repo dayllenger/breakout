@@ -1,0 +1,12 @@
+{
+    "private": true,
+    "scripts": {
+        "start": "vite",
+        "build": "vite build --base /breakout/"
+    },
+    "prettier": {
+        "printWidth": 120,
+        "semi": false,
+        "tabWidth": 4
+    }
+}
