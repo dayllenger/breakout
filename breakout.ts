@@ -22,6 +22,7 @@ type Particle = {
 
 type Sound = {
     buffer: AudioBuffer | null
+    vary: boolean
 }
 
 const cvs = document.createElement("canvas")
@@ -37,10 +38,10 @@ cvs.height = vh * window.devicePixelRatio
 document.body.appendChild(cvs)
 
 const sounds: Record<string, Sound> = {
-    over: { buffer: null },
-    pick: { buffer: null },
-    plick: { buffer: null },
-    poom: { buffer: null },
+    over: { buffer: null, vary: true },
+    pick: { buffer: null, vary: false },
+    plick: { buffer: null, vary: true },
+    poom: { buffer: null, vary: true },
 }
 const audio_ctx = new AudioContext()
 let did_click = false
@@ -58,6 +59,12 @@ function play_sound(sound: Sound): void {
     if (sound.buffer) {
         const source = audio_ctx.createBufferSource()
         source.buffer = sound.buffer
+        if (sound.vary) {
+            // pitch variation
+            const uniform = Math.random() * 2 - 1
+            const gaussian = Math.sign(uniform) * (1 - Math.exp(-uniform * uniform))
+            source.detune.value = 100 * gaussian
+        }
         source.connect(audio_ctx.destination)
         source.start()
     }
